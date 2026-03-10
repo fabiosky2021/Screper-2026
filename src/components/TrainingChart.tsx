@@ -10,21 +10,31 @@ interface Metric {
 export default function TrainingChart() {
   const [data, setData] = useState<Metric[]>([]);
 
+  const [isTraining, setIsTraining] = useState(false);
+
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
         const response = await fetch('/api/metrics');
         const result = await response.json();
-        setData(result);
+        setData(result.data || []);
+        setIsTraining(result.isTraining || false);
       } catch (error) {
         console.error('Erro ao buscar métricas:', error);
       }
     };
 
     fetchMetrics();
-    const interval = setInterval(fetchMetrics, 3000); // Poll every 3 seconds
-    return () => clearInterval(interval);
-  }, []);
+    
+    let interval: NodeJS.Timeout | null = null;
+    if (isTraining) {
+      interval = setInterval(fetchMetrics, 3000);
+    }
+    
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isTraining]);
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-2xl shadow-sm border border-zinc-200 mt-8">

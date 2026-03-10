@@ -1,5 +1,5 @@
 {
   "name": "ML Model Training Studio",
   "description": "A professional tool to configure and manage machine learning model training projects.",
-  "requestFramePermissions": []
+  "requestFramePermissions": ["microphone"]
 }
